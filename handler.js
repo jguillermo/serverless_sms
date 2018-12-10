@@ -6,8 +6,8 @@ async function enviar_sms(message,phone) {
           AWS.config.update({ region: 'us-east-1' });
           // Create publish parameters
           var params = {
-            Message: 'hola pepe', /* required */
-            PhoneNumber: '+051951737296',
+            Message: message, /* required */
+            PhoneNumber: `+051${phone}`,
           };
           console.log(params);
           // Create promise and SNS service object
@@ -27,11 +27,13 @@ async function enviar_sms(message,phone) {
 
 module.exports.hello = async (event, context) => {
 
+  let body_params = JSON.parse(event.body);
+
   let statusCode_number=200;
   let message_txt='Ok';
 
   try{
-    await enviar_sms();
+    await enviar_sms(body_params.message,body_params.number);
   }catch(error){
     statusCode_number=500;
      message_txt='error en el servidor';
